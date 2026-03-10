@@ -26,7 +26,7 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100vh; /* Reclaimed the 30px dead space! */
+            height: 100vh; 
             background-color: #1e1e1e;
             overflow: hidden; 
             font-family: Arial, sans-serif;
@@ -35,13 +35,13 @@
         /* * THE 50/50 SCROLLING GRID * */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 45% 55%; /* Perfect 50/50 split for symmetry */
+            grid-template-columns: 45% 55%; 
             grid-template-rows: 45% 55%; 
             grid-template-areas:
                 "pos11 pos12" 
                 "pos21 pos22"; 
             gap: 10px;
-            padding: 5px; /* Shrunk outer border to give more room for data */
+            padding: 5px; 
             height: 100vh;
             box-sizing: border-box;
         }
@@ -58,7 +58,7 @@
             position: relative;
         }
 
-        /* * FROZEN HEADER MASK (COMBINED FOR BOTH TOP SCREENS) * */
+        /* * FROZEN HEADER MASK * */
         .header-mask {
             position: absolute;
             top: 0;
@@ -70,10 +70,33 @@
             box-shadow: 0px 4px 6px rgba(0,0,0,0.3); 
         }
 
-        /* Adjust this single percentage to cover exactly 3 rows for BOTH sheets */
         .mask-top { height: 13%; } 
 
-        /* * THE SCROLLING WRAPPER (COMBINED FOR BOTH TOP SCREENS) * */
+       /* * THE NEW HIGH-CONTRAST TARGETING LENS * */
+        .lens-overlay {
+            position: absolute;
+            top: 60%; /* Adjusted slightly to center vertically */
+            width: 100%; /* Almost full width, but leaves a small gap */
+            right: 1%;   
+            height: 5%; /* Tune this percentage so it exactly hugs one row */
+            
+            /* No solid color to clash with your spreadsheet, just a slight darkening */
+            background-color: rgba(0, 0, 0, 0.05); 
+            
+            /* A thick, undeniable red frame to lock the students' eyes */
+            border: 4px solid #FF0000; 
+            border-radius: 8px; /* Soft pill-shaped corners for a modern look */
+            
+            z-index: 5; 
+            pointer-events: none; 
+            
+            /* THE "BOLD" ILLUSION: High contrast, extra color saturation, slight darkening */
+            backdrop-filter: contrast(1.8) saturate(1.3) brightness(0.9); 
+            
+            /* A heavy drop shadow to make it lift off the screen */
+            box-shadow: 0px 15px 30px rgba(0,0,0,0.6);
+        }
+        /* * THE SCROLLING WRAPPER * */
         .scroll-wrapper {
             position: absolute;
             top: 0;
@@ -83,16 +106,12 @@
             z-index: 1; 
         }
 
-        /* Both top screens now share this one animation rule */
         .scroll-top { animation: continuousScroll 50s infinite linear; }
 
         @keyframes continuousScroll {
-            0%, 10% { transform: translateY(0); }           /* 5s pause at the top */
-            
-            /* Change -150% if it scrolls too far or not far enough past row 43 */
-            90%, 99.9% { transform: translateY(-96%); }    /* 5s pause at the bottom */
-            
-            100% { transform: translateY(0); }              /* Instant snap back to top */
+            0%, 10% { transform: translateY(0); }           
+            90%, 99.9% { transform: translateY(-96%); }    
+            100% { transform: translateY(0); }              
         }
 
         iframe {
@@ -107,34 +126,10 @@
         }
 
         /* * THE SCALING ENGINE * */
-        
-        /* Position 1,1 (Top Left) */
-        .scale-sh1 {
-            width: 500%; 
-            height: 500%; 
-            transform: scale(0.33, 0.50) translateZ(0); 
-        }
-
-        /* Position 1,2 (Top Right) */
-        .scale-sh4 {
-            width: 500%; 
-            height: 500%; 
-            transform: scale(0.34, 0.50) translateZ(0); 
-        }
-
-        /* Position 2,1 (Bottom Left) */
-        .scale-sh2 {
-            width: 500%; 
-            height: 500%; 
-            transform: scale(0.30, 0.43) translateZ(0); 
-        }
-
-        /* Position 2,2 (Bottom Right) */
-        .scale-sh3 {
-            width: 500%; 
-            height: 500%; 
-            transform: scale(0.33, 0.33) translateZ(0); 
-        }
+        .scale-sh1 { width: 500%; height: 500%; transform: scale(0.33, 0.50) translateZ(0); }
+        .scale-sh4 { width: 500%; height: 500%; transform: scale(0.34, 0.50) translateZ(0); }
+        .scale-sh2 { width: 500%; height: 500%; transform: scale(0.30, 0.43) translateZ(0); }
+        .scale-sh3 { width: 500%; height: 500%; transform: scale(0.33, 0.33) translateZ(0); }
 
     </style>
 </head>
@@ -146,6 +141,7 @@
             <div class="header-mask mask-top">
                 <iframe class="scale-sh1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
             </div>
+            <div class="lens-overlay"></div>
             <div class="scroll-wrapper scroll-top">
                 <iframe class="scale-sh1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
             </div>
@@ -155,6 +151,7 @@
             <div class="header-mask mask-top">
                 <iframe class="scale-sh4" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
             </div>
+            <div class="lens-overlay"></div>
             <div class="scroll-wrapper scroll-top">
                 <iframe class="scale-sh4" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
             </div>
