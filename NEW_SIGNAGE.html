@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhatjangla Kalipur High School - Synchronized Dashboard</title>
+    <script>
+        // Set how often to refresh in milliseconds (70000 = 70 seconds)
+        const refreshInterval = 70000; 
+
+        setInterval(function() {
+            const iframes = document.querySelectorAll('iframe');
+            const currentTimestamp = new Date().getTime(); 
+
+            iframes.forEach(iframe => {
+                let url = iframe.src;
+                if (url.includes('&cb=')) {
+                    url = url.split('&cb=')[0];
+                }
+                iframe.src = url + "&cb=" + currentTimestamp;
+            });
+        }, refreshInterval);
+    </script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh; /* Reclaimed the 30px dead space! */
+            background-color: #1e1e1e;
+            overflow: hidden; 
+            font-family: Arial, sans-serif;
+        }
+
+        /* * THE 50/50 SCROLLING GRID * */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 45% 55%; /* Perfect 50/50 split for symmetry */
+            grid-template-rows: 45% 55%; 
+            grid-template-areas:
+                "pos11 pos12" 
+                "pos21 pos22"; 
+            gap: 10px;
+            padding: 5px; /* Shrunk outer border to give more room for data */
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .panel-pos11 { grid-area: pos11; } 
+        .panel-pos12 { grid-area: pos12; } 
+        .panel-pos21 { grid-area: pos21; } 
+        .panel-pos22 { grid-area: pos22; } 
+
+        .panel {
+            background-color: #fff;
+            border-radius: 4px;
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* * FROZEN HEADER MASK (COMBINED FOR BOTH TOP SCREENS) * */
+        .header-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10; 
+            background-color: #fff; 
+            overflow: hidden; 
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.3); 
+        }
+
+        /* Adjust this single percentage to cover exactly 3 rows for BOTH sheets */
+        .mask-top { height: 13%; } 
+
+        /* * THE SCROLLING WRAPPER (COMBINED FOR BOTH TOP SCREENS) * */
+        .scroll-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; 
+        }
+
+        /* Both top screens now share this one animation rule */
+        .scroll-top { animation: continuousScroll 50s infinite linear; }
+
+        @keyframes continuousScroll {
+            0%, 10% { transform: translateY(0); }           /* 5s pause at the top */
+            
+            /* Change -150% if it scrolls too far or not far enough past row 43 */
+            90%, 99.9% { transform: translateY(-96%); }    /* 5s pause at the bottom */
+            
+            100% { transform: translateY(0); }              /* Instant snap back to top */
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: none;
+            pointer-events: none; 
+            transform-origin: top left; 
+            -webkit-font-smoothing: antialiased;
+            backface-visibility: hidden;
+        }
+
+        /* * THE SCALING ENGINE * */
+        
+        /* Position 1,1 (Top Left) */
+        .scale-sh1 {
+            width: 500%; 
+            height: 500%; 
+            transform: scale(0.33, 0.50) translateZ(0); 
+        }
+
+        /* Position 1,2 (Top Right) */
+        .scale-sh4 {
+            width: 500%; 
+            height: 500%; 
+            transform: scale(0.34, 0.50) translateZ(0); 
+        }
+
+        /* Position 2,1 (Bottom Left) */
+        .scale-sh2 {
+            width: 500%; 
+            height: 500%; 
+            transform: scale(0.30, 0.43) translateZ(0); 
+        }
+
+        /* Position 2,2 (Bottom Right) */
+        .scale-sh3 {
+            width: 500%; 
+            height: 500%; 
+            transform: scale(0.33, 0.33) translateZ(0); 
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-grid">
+        
+        <div class="panel panel-pos11">
+            <div class="header-mask mask-top">
+                <iframe class="scale-sh1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
+            </div>
+            <div class="scroll-wrapper scroll-top">
+                <iframe class="scale-sh1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
+            </div>
+        </div>
+
+        <div class="panel panel-pos12">
+            <div class="header-mask mask-top">
+                <iframe class="scale-sh4" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
+            </div>
+            <div class="scroll-wrapper scroll-top">
+                <iframe class="scale-sh4" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
+            </div>
+        </div>
+
+        <div class="panel panel-pos21">
+            <iframe class="scale-sh2" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1402037940&range=A1:Y20&widget=false&chrome=false"></iframe>
+        </div>
+
+        <div class="panel panel-pos22">
+            <iframe class="scale-sh3" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1562054489&range=A1:X28&widget=false&chrome=false"></iframe>
+        </div>
+
+    </div>
+
+</body>
+</html>
