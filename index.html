@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bhatjangla Kalipur High School - Synchronized Dashboard</title>
     <script>
-        // Set how often to refresh in milliseconds (70000 = 70 seconds)
         const refreshInterval = 70000; 
 
         setInterval(function() {
@@ -72,30 +71,23 @@
 
         .mask-top { height: 13%; } 
 
-      /* * THE NEW HIGH-CONTRAST TARGETING LENS * */
+        /* * THE NEW HIGH-CONTRAST TARGETING LENS * */
         .lens-overlay {
             position: absolute;
-            top: 13%; 
+            top: 60%; 
             width: 100%; 
             right: 1%;   
             height: 4%; 
             
-            /* 1. THE FAINT WARM HIGHLIGHT */
             background-color: rgba(255, 255, 0, 0.08); 
-            
-            /* 2. THE PIERCING RED FRAME */
             border: 4px solid #FF0000; 
             border-radius: 8px; 
-            
             z-index: 5; 
             pointer-events: none; 
-            
-            /* 3. THE "SUPER CLEAR" ILLUSION */
             backdrop-filter: contrast(1.65) saturate(1.5) brightness(0.95); 
-            
-            /* 4. THE DEEP BLACK SHADOW: Creates maximum contrast and physical depth */
             box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.65);
         }
+
         /* * THE SCROLLING WRAPPER * */
         .scroll-wrapper {
             position: absolute;
@@ -106,12 +98,47 @@
             z-index: 1; 
         }
 
-        .scroll-top { animation: continuousScroll 50s infinite linear; }
+        /* * THE SEAMLESS LOOP ENGINE (SPLIT FOR PRECISION TUNING) * */
+        
+        /* 1. Put Original on the BOTTOM so its white tail hides behind the clone */
+        .original-sheet {
+            z-index: 1; 
+        }
 
-        @keyframes continuousScroll {
-            0%, 10% { transform: translateY(0); }           
-            90%, 99.9% { transform: translateY(-188%); }    
-            100% { transform: translateY(0); }              
+        /* =========================================
+           PANEL 1 (LEFT SHEET) - TUNING ENGINE
+           ========================================= */
+        .scroll-top-1 { animation: continuousScroll1 80s infinite linear; }
+        
+        .clone-1 {
+            z-index: 2; 
+            clip-path: inset(5.1% 0 0 0); 
+            
+            /* DECREASED to 185% to pull the clone UP and close the 1-row gap on the left */
+            top: 183%; 
+        }
+
+        @keyframes continuousScroll1 {
+            0% { transform: translateY(0); }           
+            100% { transform: translateY(-183%); }    
+        }
+
+        /* =========================================
+           PANEL 2 (RIGHT SHEET) - TUNING ENGINE
+           ========================================= */
+        .scroll-top-2 { animation: continuousScroll2 80s infinite linear; }
+        
+        .clone-2 {
+            z-index: 2; 
+            clip-path: inset(5.1% 0 0 0); 
+            
+            /* KEPT EXACTLY AT 187% because the right sheet is already perfect */
+            top: 186%; 
+        }
+
+        @keyframes continuousScroll2 {
+            0% { transform: translateY(0); }           
+            100% { transform: translateY(-186%); }    
         }
 
         iframe {
@@ -141,9 +168,12 @@
             <div class="header-mask mask-top">
                 <iframe class="scale-sh1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
             </div>
+            
             <div class="lens-overlay"></div>
-            <div class="scroll-wrapper scroll-top">
-                <iframe class="scale-sh1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
+            
+            <div class="scroll-wrapper scroll-top-1">
+                <iframe class="scale-sh1 original-sheet" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
+                <iframe class="scale-sh1 clone-1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
             </div>
         </div>
 
@@ -151,9 +181,12 @@
             <div class="header-mask mask-top">
                 <iframe class="scale-sh4" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
             </div>
+            
             <div class="lens-overlay"></div>
-            <div class="scroll-wrapper scroll-top">
-                <iframe class="scale-sh4" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
+            
+            <div class="scroll-wrapper scroll-top-2">
+                <iframe class="scale-sh4 original-sheet" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
+                <iframe class="scale-sh4 clone-2" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
             </div>
         </div>
 
