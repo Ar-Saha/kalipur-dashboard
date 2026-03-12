@@ -3,10 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bhatjangla Kalipur High School - Synchronized Dashboard</title>
+    <title>Bhatjangla Kalipur High School - Automated Dashboard</title>
     <script>
-        const refreshInterval = 70000; 
+        /* ==========================================
+           1. AUTOMATIC TIME SWITCHER
+           ========================================== */
+        function checkTimeAndSwitch() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
 
+            // Convert current time to total seconds for precise math
+            const currentTotalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+
+            // Start Time: 1:30:15 PM (13:30:15)
+            const startTotalSeconds = (13 * 3600) + (30 * 60) + 15;
+            // End Time: 2:09:45 PM (14:09:45)
+            const endTotalSeconds = (14 * 3600) + (9 * 60) + 45;
+
+            const mainView = document.getElementById('view-main');
+            const specialView = document.getElementById('view-special');
+
+            // If we are inside the magic time window...
+            if (currentTotalSeconds >= startTotalSeconds && currentTotalSeconds <= endTotalSeconds) {
+                if (specialView.style.display === 'none') {
+                    specialView.style.display = 'block'; // Show Sandbox View
+                    mainView.style.display = 'none';     // Hide Main View
+                }
+            } else {
+                // If we are outside the time window...
+                if (mainView.style.display === 'none') {
+                    mainView.style.display = 'block';    // Show Main View
+                    specialView.style.display = 'none';  // Hide Sandbox View
+                }
+            }
+        }
+
+        // Check the clock every 1 second
+        setInterval(checkTimeAndSwitch, 1000);
+
+        /* ==========================================
+           2. 70-SECOND IFRAME REFRESHER
+           ========================================== */
+        const refreshInterval = 70000; 
         setInterval(function() {
             const iframes = document.querySelectorAll('iframe');
             const currentTimestamp = new Date().getTime(); 
@@ -19,19 +59,107 @@
                 iframe.src = url + "&cb=" + currentTimestamp;
             });
         }, refreshInterval);
+
+        // Run the clock check immediately on load
+        window.onload = checkTimeAndSwitch;
     </script>
+    
     <style>
+        /* ==========================================
+           GLOBAL CSS (Shared by both views)
+           ========================================== */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100vh; 
+            height: 100vh;
             background-color: #1e1e1e;
-            overflow: hidden; 
+            overflow: hidden;
             font-family: Arial, sans-serif;
         }
 
-        /* * THE 50/50 SCROLLING GRID * */
+        .panel {
+            background-color: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: none;
+            pointer-events: none; 
+            transform-origin: top left; 
+            -webkit-font-smoothing: antialiased;
+            backface-visibility: hidden;
+        }
+
+
+        /* ==========================================
+           VIEW 1: SPECIAL TIME DASHBOARD (1:30 PM)
+           ========================================== */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            height: 100vh;
+            width: 100vw;
+            gap: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .scale-tune {
+            width: 200vw; 
+            height: 200vh; 
+            transform: scale(0.57); 
+            transform-origin: top left;
+            position: absolute;
+            top: -15px; 
+            left: 0;
+            border: none;
+        }
+
+        /* Prefixed with alt- so it doesn't break the Main View */
+        .alt-shadow-caster {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5.5%; 
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.4);
+            background-color: transparent;
+            pointer-events: none;
+            z-index: 8;
+        }
+
+        .alt-header-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5.5%; 
+            z-index: 8;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .alt-data-container {
+            position: absolute;
+            top: 5.5%; 
+            left: 0;
+            width: 100%;
+            height: 92%; 
+            z-index: 1;
+            overflow: hidden;
+        }
+
+
+        /* ==========================================
+           VIEW 2: MAIN DASHBOARD (All other times)
+           ========================================== */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 45% 55%; 
@@ -50,111 +178,42 @@
         .panel-pos21 { grid-area: pos21; } 
         .panel-pos22 { grid-area: pos22; } 
 
-        .panel {
+        .left-shadow-caster {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 13%; 
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
+            background-color: transparent;
+            pointer-events: none;
+            z-index: 8;
+        }
+
+        .right-header-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 11%; 
+            z-index: 8;
+            overflow: hidden;
             background-color: #fff;
-            border-radius: 4px;
-            overflow: hidden; 
-            position: relative;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
         }
 
-        /* * FROZEN HEADER MASK * */
-        .header-mask {
+        .right-data-container {
             position: absolute;
-            top: 0;
+            top: 11%; 
             left: 0;
             width: 100%;
-            z-index: 10; 
-            background-color: #fff; 
-            overflow: hidden; 
-            box-shadow: 0px 4px 6px rgba(0,0,0,0.3); 
+            height: 95%; 
+            z-index: 1;
+            overflow: hidden;
         }
 
-        .mask-top { height: 13%; } 
-
-        /* * THE NEW HIGH-CONTRAST TARGETING LENS * */
-        .lens-overlay {
-            position: absolute;
-            top: 60%; 
-            width: 100%; 
-            right: 1%;   
-            height: 4%; 
-            
-            background-color: rgba(255, 255, 0, 0.08); 
-            border: 4px solid #FF0000; 
-            border-radius: 8px; 
-            z-index: 5; 
-            pointer-events: none; 
-            backdrop-filter: contrast(1.65) saturate(1.5) brightness(0.95); 
-            box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.65);
-        }
-
-        /* * THE SCROLLING WRAPPER * */
-        .scroll-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1; 
-        }
-
-        /* * THE SEAMLESS LOOP ENGINE (SPLIT FOR PRECISION TUNING) * */
-        
-        /* 1. Put Original on the BOTTOM so its white tail hides behind the clone */
-        .original-sheet {
-            z-index: 1; 
-        }
-
-        /* =========================================
-           PANEL 1 (LEFT SHEET) - TUNING ENGINE
-           ========================================= */
-        .scroll-top-1 { animation: continuousScroll1 80s infinite linear; }
-        
-        .clone-1 {
-            z-index: 2; 
-            clip-path: inset(5.1% 0 0 0); 
-            
-            /* DECREASED to 185% to pull the clone UP and close the 1-row gap on the left */
-            top: 183%; 
-        }
-
-        @keyframes continuousScroll1 {
-            0% { transform: translateY(0); }           
-            100% { transform: translateY(-183%); }    
-        }
-
-        /* =========================================
-           PANEL 2 (RIGHT SHEET) - TUNING ENGINE
-           ========================================= */
-        .scroll-top-2 { animation: continuousScroll2 80s infinite linear; }
-        
-        .clone-2 {
-            z-index: 2; 
-            clip-path: inset(5.1% 0 0 0); 
-            
-            /* KEPT EXACTLY AT 187% because the right sheet is already perfect */
-            top: 186%; 
-        }
-
-        @keyframes continuousScroll2 {
-            0% { transform: translateY(0); }           
-            100% { transform: translateY(-186%); }    
-        }
-
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            border: none;
-            pointer-events: none; 
-            transform-origin: top left; 
-            -webkit-font-smoothing: antialiased;
-            backface-visibility: hidden;
-        }
-
-        /* * THE SCALING ENGINE * */
-        .scale-sh1 { width: 500%; height: 500%; transform: scale(0.33, 0.50) translateZ(0); }
-        .scale-sh4 { width: 500%; height: 500%; transform: scale(0.34, 0.50) translateZ(0); }
+        .scale-sh1 { width: 500vw; height: 500vh; transform: scale(0.28, 0.52) translateZ(0); }
+        .scale-sh4 { width: 500vw; height: 500vh; transform: scale(0.34, 0.42) translateZ(0); }
         .scale-sh2 { width: 500%; height: 500%; transform: scale(0.30, 0.43) translateZ(0); }
         .scale-sh3 { width: 500%; height: 500%; transform: scale(0.33, 0.33) translateZ(0); }
 
@@ -162,42 +221,53 @@
 </head>
 <body>
 
-    <div class="dashboard-grid">
-        
-        <div class="panel panel-pos11">
-            <div class="header-mask mask-top">
-                <iframe class="scale-sh1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
+    <div id="view-special" style="display: none;">
+        <div class="split-grid">
+            <div class="panel">
+                <div class="alt-shadow-caster"></div>
+                <iframe class="scale-tune" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1152467491&range=A1:Q63&widget=false&chrome=false"></iframe>
             </div>
-            
-            <div class="lens-overlay"></div>
-            
-            <div class="scroll-wrapper scroll-top-1">
-                <iframe class="scale-sh1 original-sheet" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
-                <iframe class="scale-sh1 clone-1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1923285599&range=A1:S43&widget=false&chrome=false"></iframe>
-            </div>
-        </div>
 
-        <div class="panel panel-pos12">
-            <div class="header-mask mask-top">
-                <iframe class="scale-sh4" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
-            </div>
-            
-            <div class="lens-overlay"></div>
-            
-            <div class="scroll-wrapper scroll-top-2">
-                <iframe class="scale-sh4 original-sheet" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
-                <iframe class="scale-sh4 clone-2" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S43&widget=false&chrome=false"></iframe>
+            <div class="panel">
+                <div class="alt-header-mask">
+                    <iframe class="scale-tune" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1152467491&range=A1:Q3&widget=false&chrome=false"></iframe>
+                </div>
+                
+                <div class="alt-data-container">
+                    <iframe class="scale-tune" style="margin-top: -89px;" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1152467491&range=A58:Q123&widget=false&chrome=false"></iframe>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="panel panel-pos21">
-            <iframe class="scale-sh2" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1402037940&range=A1:Y20&widget=false&chrome=false"></iframe>
+
+    <div id="view-main" style="display: block;">
+        <div class="dashboard-grid">
+            
+            <div class="panel panel-pos11">
+                <div class="left-shadow-caster"></div>
+                <iframe class="scale-sh1" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S20&widget=false&chrome=false"></iframe>
+            </div>
+
+            <div class="panel panel-pos12">
+                <div class="right-header-mask">
+                    <iframe class="scale-sh4" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S3&widget=false&chrome=false"></iframe>
+                </div>
+                
+                <div class="right-data-container">
+                    <iframe class="scale-sh4" style="margin-top: 0px;" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A21:S43&widget=false&chrome=false"></iframe>
+                </div>
+            </div>
+
+            <div class="panel panel-pos21">
+                <iframe class="scale-sh2" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1402037940&range=A1:Y20&widget=false&chrome=false"></iframe>
+            </div>
+
+            <div class="panel panel-pos22">
+                <iframe class="scale-sh3" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1562054489&range=A1:X28&widget=false&chrome=false"></iframe>
+            </div>
+
         </div>
-
-        <div class="panel panel-pos22">
-            <iframe class="scale-sh3" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1562054489&range=A1:X28&widget=false&chrome=false"></iframe>
-        </div>
-
     </div>
 
 </body>
