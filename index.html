@@ -14,33 +14,29 @@
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
 
-            // Convert current time to total seconds for precise math
             const currentTotalSeconds = (hours * 3600) + (minutes * 60) + seconds;
 
             // Start Time: 1:30:15 PM (13:30:15)
             const startTotalSeconds = (13 * 3600) + (30 * 60) + 15;
             // End Time: 2:09:45 PM (14:09:45)
-            const endTotalSeconds = (14 * 3600) + (9 * 60) + 45;
+            const endTotalSeconds = (14 * 3600) + (09 * 60) + 45;
 
             const mainView = document.getElementById('view-main');
             const specialView = document.getElementById('view-special');
 
-            // If we are inside the magic time window...
             if (currentTotalSeconds >= startTotalSeconds && currentTotalSeconds <= endTotalSeconds) {
                 if (specialView.style.display === 'none') {
-                    specialView.style.display = 'block'; // Show Sandbox View
-                    mainView.style.display = 'none';     // Hide Main View
+                    specialView.style.display = 'block'; 
+                    mainView.style.display = 'none';     
                 }
             } else {
-                // If we are outside the time window...
                 if (mainView.style.display === 'none') {
-                    mainView.style.display = 'block';    // Show Main View
-                    specialView.style.display = 'none';  // Hide Sandbox View
+                    mainView.style.display = 'block';    
+                    specialView.style.display = 'none';  
                 }
             }
         }
 
-        // Check the clock every 1 second
         setInterval(checkTimeAndSwitch, 1000);
 
         /* ==========================================
@@ -60,13 +56,12 @@
             });
         }, refreshInterval);
 
-        // Run the clock check immediately on load
         window.onload = checkTimeAndSwitch;
     </script>
     
     <style>
         /* ==========================================
-           GLOBAL CSS (Shared by both views)
+           GLOBAL CSS
            ========================================== */
         body, html {
             margin: 0;
@@ -98,67 +93,81 @@
 
 
         /* ==========================================
-           VIEW 1: SPECIAL TIME DASHBOARD (1:30 PM)
+           VIEW 1: SPECIAL TIME DASHBOARD (FULL SCREEN SCROLL)
            ========================================== */
-        .split-grid {
-            display: grid;
-            grid-template-columns: 50% 50%;
+        .fullscreen-panel {
+            width: 100%;
             height: 100vh;
-            width: 100vw;
-            gap: 10px;
-            padding: 10px;
-            box-sizing: border-box;
+            position: relative;
+            background-color: #fff;
+            overflow: hidden;
         }
-
-        .scale-tune {
+	.scale-fs {
             width: 200vw; 
-            height: 200vh; 
-            transform: scale(0.57); 
+            height: 4000px; 
+            transform: scale(1.14); 
             transform-origin: top left;
             position: absolute;
-            top: -15px; 
             left: 0;
             border: none;
+            
+            /* THE FIX: Use margin-top so it doesn't break our loop math! */
+            margin-top: -30px; 
         }
 
-        /* Prefixed with alt- so it doesn't break the Main View */
-        .alt-shadow-caster {
+        /* 2. Frozen Header Mask */
+        .fs-header-mask {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 5.5%; 
-            box-shadow: 0px 4px 6px rgba(0,0,0,0.4);
-            background-color: transparent;
-            pointer-events: none;
-            z-index: 8;
-        }
-
-        .alt-header-mask {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5.5%; 
-            z-index: 8;
+            
+            /* TUNE THIS: Adjust to perfectly fit your 3 header rows */
+            height: 12%; 
+            
+            z-index: 10;
             overflow: hidden;
             background-color: #fff;
-            box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.5);
         }
 
-        .alt-data-container {
+        /* 3. The Scrolling Engine */
+        .fs-scroll-wrapper {
             position: absolute;
-            top: 5.5%; 
+            top: 0;
             left: 0;
             width: 100%;
-            height: 92%; 
+            height: 100%;
             z-index: 1;
-            overflow: hidden;
+            
+            /* TUNE THIS: Change '90s' to make the scroll faster or slower */
+            animation: fsContinuousScroll 125s infinite linear; 
         }
 
+       .fs-original { 
+            z-index: 1; 
+            
+            /* Lock the original exactly to the top */
+            top: 0; 
+        }
 
+      .fs-clone {
+            z-index: 2; 
+            
+            /* FIX 1: Change to hard pixels so it stops cutting off your clone's data! */
+            clip-path: inset(136px 0 0 0); 
+            
+            /* FIX 2: Push it down by ~300px to stop crushing the last 15 rows */
+            top: 3830px; 
+        }
+    @keyframes fsContinuousScroll {
+            0% { transform: translateY(0); }           
+            
+            /* MUST MATCH EXACTLY! */
+            100% { transform: translateY(-3825px); }    
+        }
         /* ==========================================
-           VIEW 2: MAIN DASHBOARD (All other times)
+           VIEW 2: MAIN DASHBOARD (DO NOT TOUCH - ALREADY TUNED)
            ========================================== */
         .dashboard-grid {
             display: grid;
@@ -183,7 +192,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 13%; 
+            height: 12%; 
             box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
             background-color: transparent;
             pointer-events: none;
@@ -222,21 +231,17 @@
 <body>
 
     <div id="view-special" style="display: none;">
-        <div class="split-grid">
-            <div class="panel">
-                <div class="alt-shadow-caster"></div>
-                <iframe class="scale-tune" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1152467491&range=A1:Q63&widget=false&chrome=false"></iframe>
+        <div class="fullscreen-panel">
+            
+            <div class="fs-header-mask">
+                <iframe class="scale-fs" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1152467491&range=A1:Q3&widget=false&chrome=false"></iframe>
+            </div>
+            
+            <div class="fs-scroll-wrapper">
+                <iframe class="scale-fs fs-original" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1152467491&range=A1:Q123&widget=false&chrome=false"></iframe>
+                <iframe class="scale-fs fs-clone" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1152467491&range=A1:Q123&widget=false&chrome=false"></iframe>
             </div>
 
-            <div class="panel">
-                <div class="alt-header-mask">
-                    <iframe class="scale-tune" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1152467491&range=A1:Q3&widget=false&chrome=false"></iframe>
-                </div>
-                
-                <div class="alt-data-container">
-                    <iframe class="scale-tune" style="margin-top: -89px;" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=1152467491&range=A58:Q123&widget=false&chrome=false"></iframe>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -253,7 +258,6 @@
                 <div class="right-header-mask">
                     <iframe class="scale-sh4" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A1:S3&widget=false&chrome=false"></iframe>
                 </div>
-                
                 <div class="right-data-container">
                     <iframe class="scale-sh4" style="margin-top: 0px;" src="https://docs.google.com/spreadsheets/d/1biShF8KbuYCAjdtH8YRYtotxFsA5ORlxrbcqfs1pIEY/htmlembed?gid=545381223&range=A21:S43&widget=false&chrome=false"></iframe>
                 </div>
@@ -269,6 +273,3 @@
 
         </div>
     </div>
-
-</body>
-</html>
