@@ -155,16 +155,16 @@
             z-index: 2; 
             
             /* FIX 1: Change to hard pixels so it stops cutting off your clone's data! */
-            clip-path: inset(136px 0 0 0); 
+            clip-path: inset(135px 0 0 0); 
             
             /* FIX 2: Push it down by ~300px to stop crushing the last 15 rows */
-            top: 3830px; 
+            top: 3710px; 
         }
     @keyframes fsContinuousScroll {
             0% { transform: translateY(0); }           
             
             /* MUST MATCH EXACTLY! */
-            100% { transform: translateY(-3825px); }    
+            100% { transform: translateY(-3710px); }    
         }
         /* ==========================================
            VIEW 2: MAIN DASHBOARD (DO NOT TOUCH - ALREADY TUNED)
@@ -273,3 +273,6 @@
 
         </div>
     </div>
+
+</body>
+</html>
